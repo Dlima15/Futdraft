@@ -1,0 +1,2 @@
+ALTER TABLE player
+ADD COLUMN team_id UUID REFERENCES team(id);

@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS team (
+    id UUID PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    goals INT NOT NULL DEFAULT 0,
+    game_id UUID NOT NULL REFERENCES game(id),
+    created_at TIMESTAMP DEFAULT NOW()
+);
