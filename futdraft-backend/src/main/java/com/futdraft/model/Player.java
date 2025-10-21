@@ -1,56 +1,56 @@
 package com.futdraft.model;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.util.UUID;
 
-/**
- * Representa um jogador que participa das peladas.
- * Pode estar vinculado a um usuário cadastrado ou apenas identificado pelo nome.
- */
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "player") // Cria a tabela "player" no banco
+@Table(name = "player")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class Player {
-    /**Identifcador unico do jogador UUID */
+
     @Id
-    @GeneratedValue(strategy =  GenerationType.UUID)
-    private UUID id; /** Chave primaria única */
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    /** Nome do Jogador - obrigatorio */
     @Column(nullable = false, length = 100)
-    private String name; // nome do jogador
+    private String name;
 
-    /** indica de confirmou presença ( util para o owner pra ver quem vai) */
+    @Builder.Default
     @Column(nullable = false)
-    private boolean confirmed = false; /** False ainda não confirmou */
+    private boolean confirmed = false;
 
-    /**Referencia ao jogo que esse jogador pertence*/
-    @ManyToOne
-    @JoinColumn(name = "game_id", nullable = false )
-    private Game game;/** Muitos jogadores podem estar no mesmo jogo */
+    @JsonBackReference(value = "game-players")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
 
-    /* Usuario dono desse jogador (opcional)
-     * Se for um jogador fixo do sistema (usuário logado), ele estará vinculado a um User.
-     * Se for um convidado, o campo pode ficar nulo.
-     */
+    @JsonBackReference(value = "user-players")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = ("user_id"))
-    private User user; /** Jogador pode ser anonimo ou vinculado a um usuario*/
-
-        /**
-     * Time ao qual o jogador pertence.
-     * Muitos jogadores podem estar em um mesmo time.
-     */
-    @ManyToOne
+    @JsonBackReference(value = "team-players")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
-    private Team team; //Relacionamento opcional (pode estar null se o jogador ainda não foi sorteado)
-
+    private Team team;
 }

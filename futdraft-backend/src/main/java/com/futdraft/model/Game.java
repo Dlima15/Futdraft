@@ -1,14 +1,28 @@
 package com.futdraft.model;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
-/**
- * Representa um jogo (pelada) criado por um usuário.
- * Cada jogo tem informações básicas como data, local e o usuário que criou.
- */
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "game")
@@ -17,39 +31,35 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+public class Game {
 
-public class Game{
-   
-    /** Identificador único (UUID) gerado automaticamente */
     @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
-    private UUID id; 
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    /* Data e a hora da partida */
-    @Column(nullable= false)
-    private LocalDateTime date; 
+    @Column(nullable = false)
+    private LocalDateTime date;
 
-    /** Nome ou descrição curta do local */
-    @Column( nullable = false, length = 160)
-    private String location; 
+    @Column(nullable = false, length = 160)
+    private String location;
 
-    /**Quantidade de jogadores por time 5,7 ou até 11 */
-    @Column (nullable = false)
-    private Integer teamSize; 
+    @Column(nullable = false)
+    private Integer teamSize;
 
-    /**Momento em que o jogo foi criado */
-    @Column (name = "created_at")
+    @Builder.Default
+    @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-     /**
-     * Relacionamento com o usuário que criou o jogo.
-     * 
-     * @ManyToOne → vários jogos podem ser criados por um mesmo usuário.
-     * @JoinColumn → cria a chave estrangeira user_id na tabela "game".
-     */
-
-    @ManyToOne
+    @JsonBackReference(value = "user-games")
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
+    @JsonManagedReference(value = "game-players")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Player> players;
+
+    @JsonManagedReference(value = "game-teams")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Team> teams;
 }

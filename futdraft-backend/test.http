@@ -1,12 +1,42 @@
-### Criar novo jogo
+### 1️⃣ Criar novo jogo
 POST http://localhost:8080/api/games/59b03422-b97a-40d2-a71e-9e460be70f9c
 Content-Type: application/json
 
 {
+  "name": "Pelada da Segunda",
   "date": "2025-11-10T10:00:00",
   "location": "Campo Central FutDraft",
   "teamSize": 7
 }
 
-### Listar jogos
+### 2️⃣ Listar todos os jogos
 GET http://localhost:8080/api/games
+
+### 3️⃣ Criar jogador confirmado (Danilo)
+POST http://localhost:8080/api/players
+Content-Type: application/json
+
+{
+  "name": "Danilo",
+  "confirmed": true,
+  "game": { "id": "cafdebe9-1f57-4579-82b5-ddea807b6010" }
+}
+
+### 4️⃣ Criar outro jogador (Rafa)
+POST http://localhost:8080/api/players
+Content-Type: application/json
+
+{
+  "name": "Rafa",
+  "confirmed": true,
+  "game": { "id": "cafdebe9-1f57-4579-82b5-ddea807b6010" }
+}
+
+### 5️⃣ Listar jogadores de um jogo
+GET http://localhost:8080/api/players/game/cafdebe9-1f57-4579-82b5-ddea807b6010
+
+### 6️⃣ Sortear times (modo aleatório)
+POST http://localhost:8080/api/games/cafdebe9-1f57-4579-82b5-ddea807b6010/draft?mode=random&teams=2
+
+### 7️⃣ Sortear times (modo balanceado)
+POST http://localhost:8080/api/games/cafdebe9-1f57-4579-82b5-ddea807b6010/draft?mode=balanced&teams=2

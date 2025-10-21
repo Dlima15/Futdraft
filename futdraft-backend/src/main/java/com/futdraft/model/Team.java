@@ -1,57 +1,59 @@
 package com.futdraft.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
-/**
- * Representa um time dentro de uma pelada (Game).
- * Cada jogo pode ter dois ou mais times, e cada time contém vários jogadores.
- */
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "team") //  Cria a tabela "team" no banco
+@Table(name = "team")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+public class Team {
 
-public class Team{
-    /** Identificador unico do time */
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    /**Nome do time ex Time azul time vermelho */
     @Column(nullable = false, length = 100)
-    private String name; /** nome do time */
+    private String name;
 
-    /** Qiamtodade de gols marcados no jogo */
+    @Builder.Default
     @Column(nullable = false)
-    private int goals = 0; //Gols começam com 0
+    private int goals = 0;
 
-    /**
-     * Relação com o jogo (pelada) ao qual esse time pertence.
-     * Muitos times podem estar em um mesmo jogo (ex: Time A e Time B dentro do mesmo Game).
-     */
-
-    @ManyToOne
-    @JoinColumn(name = "game_id", nullable = true)
+    @JsonBackReference(value = "game-teams")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-     /**
-     * Relação com os jogadores que pertencem a esse time.
-     * Um time pode ter vários jogadores.
-     * mappedBy = "team" → diz que o dono da relação é o atributo 'team' na classe Player.
-     * cascade = ALL → se o time for apagado, apaga todos os jogadores associados a ele.
-     */
- 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Player> players = new ArrayList<>();
+    @JsonManagedReference(value = "team-players")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Player> players;
 
-    /** Momento de criação do registro */
-    @Column(name = "created_at")
-    private Date createdAt = new Date(); //Data de criação padrão
-
+    @Builder.Default
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt = new Date();
 }
