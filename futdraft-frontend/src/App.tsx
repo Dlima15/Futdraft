@@ -1,7 +1,6 @@
-import LoginRegister from "./pages/LoginRegister";
+import GamesUI from "./pages/GamesUI";
+// ou crie rotas depois; por agora, mostra direto
 
-function App() {
-  return <LoginRegister />;
+export default function App() {
+  return <GamesUI />;
 }
-
-export default App;
