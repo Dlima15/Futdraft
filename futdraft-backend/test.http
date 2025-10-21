@@ -1,0 +1,12 @@
+### Criar novo jogo
+POST http://localhost:8080/api/games/59b03422-b97a-40d2-a71e-9e460be70f9c
+Content-Type: application/json
+
+{
+  "date": "2025-11-10T10:00:00",
+  "location": "Campo Central FutDraft",
+  "teamSize": 7
+}
+
+### Listar jogos
+GET http://localhost:8080/api/games
