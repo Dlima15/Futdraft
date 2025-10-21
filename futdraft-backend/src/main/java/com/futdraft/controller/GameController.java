@@ -67,4 +67,6 @@ public class GameController {
     public ResponseEntity<List<Game>> listThisWeek(@PathVariable UUID ownerId) {
         return ResponseEntity.ok(gameService.listGamesThisWeek(ownerId));
     }
+
+    
 }

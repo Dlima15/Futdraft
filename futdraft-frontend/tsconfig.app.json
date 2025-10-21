@@ -22,7 +22,20 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* ✅ Alias para imports absolutos */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src", "public/tailwind.config.js", "tailwind.config.js", "postcss.config.js"]
+
+  /* ✅ Inclui os diretórios relevantes */
+  "include": [
+    "src",
+    "public/tailwind.config.js",
+    "tailwind.config.js",
+    "postcss.config.js"
+  ]
 }

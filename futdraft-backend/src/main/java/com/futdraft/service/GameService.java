@@ -69,4 +69,6 @@ public class GameService {
         LocalDateTime end = LocalDateTime.now().plusDays(7);
         return gameRepository.findByOwnerIdAndDateBetween(ownerId, start, end);
     }
+
+    
 }
